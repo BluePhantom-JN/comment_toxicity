@@ -6,3 +6,4 @@ matplotlib
 streamlit
 opencv-python-headless
 dlib-bin
+seaborn
