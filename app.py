@@ -263,7 +263,7 @@ with tab1:
 # -----------------------
 with tab2:
     st.header("Bulk prediction from CSV")
-    st.write("Upload CSV with a column named `comment`. The app will append columns with probabilities and binary predictions.")
+    st.write("Upload CSV with a column named `comment_text`. The app will append columns with probabilities and binary predictions.")
     uploaded = st.file_uploader("Upload CSV file", type=["csv"], key="bulk")
     if uploaded is not None:
         try:
@@ -273,14 +273,14 @@ with tab2:
             df = None
 
         if df is not None:
-            if 'comment' not in df.columns:
-                st.error("CSV must contain a 'comment' column.")
+            if 'comment_text' not in df.columns:
+                st.error("CSV must contain a 'comment_text' column.")
             else:
                 run_preview = st.checkbox("Show preview predictions only (first 10 rows)", value=True)
                 if st.button("Run bulk predictions", key="bulk_run"):
                     # apply predictions
                     results = []
-                    for text in df['comment'].astype(str).fillna(''):
+                    for text in df['comment_text'].astype(str).fillna(''):
                         out = predict_single_text(text, loaded_model, word2idx, max_len=DEFAULT_MAX_LEN, threshold=THRESHOLD)
                         if out.get("error") == "no_model":
                             # stop early
