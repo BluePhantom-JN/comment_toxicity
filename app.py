@@ -308,7 +308,7 @@ with tab2:
 # Tab 3: Insights
 # -----------------------
 with tab3:
-    def show_insights():
+    
         st.header("Data Insights")
         
         # Load data
