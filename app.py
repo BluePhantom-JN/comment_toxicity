@@ -53,14 +53,14 @@ def clean_text(text):
 class TextRNN(nn.Module):
     def __init__(self, vocab_size, embedding_dim, hidden_dim, output_dim):
         super(TextRNN, self).__init__()
-        self.embedding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
+        self.embeding = nn.Embedding(vocab_size, embedding_dim, padding_idx=0)
         self.rnn = nn.RNN(embedding_dim, hidden_dim, batch_first=True)
         self.fc1 = nn.Linear(hidden_dim, 64)
         self.dropout = nn.Dropout(0.4)
         self.fc2 = nn.Linear(64, output_dim)
 
     def forward(self, x):
-        x = self.embedding(x)
+        x = self.embeding(x)
         output, hidden = self.rnn(x)
         x = self.fc1(hidden.squeeze(0))
         x = self.dropout(x)
