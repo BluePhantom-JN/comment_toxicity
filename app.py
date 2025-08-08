@@ -308,53 +308,60 @@ with tab2:
 # Tab 3: Insights
 # -----------------------
 with tab3:
-    st.header("Data Insights")
-    st.write("Upload a dataset CSV similar to your training data (columns: comment_text, tokens, or label columns).")
-    insights_file = st.file_uploader("Upload insights CSV", type=["csv"], key="insights")
-    if insights_file is not None:
-        try:
-            df_ins = pd.read_csv(insights_file)
-            st.write("### Dataset preview")
-            st.write(f"Rows: {df_ins.shape[0]}  Columns: {df_ins.shape[1]}")
-            st.dataframe(df_ins.head(10))
-        except Exception as e:
-            st.error(f"Failed to read CSV: {e}")
-            df_ins = None
+    def show_insights():
+        st.header("Data Insights")
+        
+        # Load data
+        df = pd.read_csv("insights.csv")
+        lab = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
+        
+        # Pie Chart
+        st.subheader("Label Distribution (Pie Chart)")
+        fig1, ax1 = plt.subplots()
+        df[lab].sum().plot(kind='pie', autopct='%1.1f%%', ax=ax1)
+        ax1.set_ylabel("")
+        st.pyplot(fig1)
+    
+        # Bar Chart of Labels
+        st.subheader("Label Counts (Bar Chart)")
+        fig2, ax2 = plt.subplots()
+        df[lab].sum().sort_values(ascending=False).plot(kind='bar', ax=ax2)
+        ax2.set_ylabel("Number of Comments")
+        ax2.set_xticklabels(ax2.get_xticklabels(), rotation=45)
+        st.pyplot(fig2)
+    
+        # Label Sum Column
+        df['label_sum'] = df[lab].sum(axis=1)
+        
+        st.subheader("Label Sum Distribution")
+        fig3, ax3 = plt.subplots()
+        df['label_sum'].value_counts().sort_index().plot(kind='bar', ax=ax3)
+        ax3.set_xlabel("Number of Toxic Categories in Comment")
+        ax3.set_ylabel("Count")
+        st.pyplot(fig3)
+    
+        # Length statistics
+        if 'len' in df.columns:
+            st.subheader("Length Statistics for Non-toxic Comments")
+            st.write(df[df['label_sum'] == 0]['len'].describe())
+    
+            st.subheader("Length Statistics for Toxic Comments")
+            st.write(df[df['label_sum'] > 0]['len'].describe())
+    
+            # Histogram of Lengths
+            st.subheader("Histogram of Comment Lengths")
+            fig4, ax4 = plt.subplots()
+            sns.histplot(df['len'], bins=50, kde=True, ax=ax4)
+            st.pyplot(fig4)
+    
+            # Per-label length stats
+            st.subheader("Per-label Length Statistics")
+            for col in lab:
+                st.markdown(f"**{col.upper()}**")
+                st.write(df[df[col] == 1]['len'].describe())
+        else:
+            st.warning("No 'len' column found in insights.csv")
 
-        if df_ins is not None:
-            # If tokens column exists use it, else compute tokens on comment_text
-            if 'tokens' not in df_ins.columns and 'comment_text' in df_ins.columns:
-                st.info("No 'tokens' column found — computing tokens from 'comment_text'.")
-                df_ins['tokens'] = df_ins['comment_text'].astype(str).apply(clean_text)
-
-            # label distribution if label columns exist
-            found_labels = [c for c in LABELS if c in df_ins.columns]
-            if found_labels:
-                st.write("### Label distribution (counts)")
-                label_counts = df_ins[found_labels].sum().sort_values(ascending=False)
-                st.bar_chart(label_counts)
-
-            # tokens length distribution
-            if 'tokens' in df_ins.columns:
-                df_ins['tokens_len'] = df_ins['tokens'].apply(lambda x: len(x) if isinstance(x, list) else 0)
-                st.write("### Tokens length distribution")
-                fig, ax = plt.subplots(figsize=(6,3))
-                sns.histplot(df_ins['tokens_len'], bins=30, kde=True, ax=ax)
-                st.pyplot(fig)
-
-                # Top words
-                all_words = [w for toks in df_ins['tokens'] if isinstance(toks, list) for w in toks]
-                if len(all_words):
-                    counter = Counter(all_words)
-                    topk = counter.most_common(30)
-                    top_df = pd.DataFrame(topk, columns=['word','count'])
-                    st.write("### Top words (top 30)")
-                    st.dataframe(top_df)
-                    fig2, ax2 = plt.subplots(figsize=(8,4))
-                    sns.barplot(data=top_df.head(20), x='count', y='word', ax=ax2)
-                    st.pyplot(fig2)
-            else:
-                st.info("No 'tokens' column available and no 'comment_text' to tokenize. Provide tokens or comments to get token insights.")
 
 # -----------------------
 # Tab 4: Model evolution / metrics
