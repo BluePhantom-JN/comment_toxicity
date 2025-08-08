@@ -8,4 +8,4 @@ streamlit
 opencv-python-headless
 dlib-bin
 seaborn
-sklearn
+scikit-learn
