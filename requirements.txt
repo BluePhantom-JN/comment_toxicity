@@ -1,0 +1,8 @@
+streamlit
+torch
+torchvision
+Pillow
+matplotlib
+streamlit
+opencv-python-headless
+dlib-bin
