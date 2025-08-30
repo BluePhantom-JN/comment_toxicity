@@ -16,6 +16,7 @@ from nltk.stem import WordNetLemmatizer
 
 from collections import Counter
 # Make sure it exists
+import os
 os.makedirs(NLTK_PATH, exist_ok=True)
 
 # Append to nltk data search path
