@@ -15,9 +15,6 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 from collections import Counter
-# Choose a writable path inside your project
-NLTK_PATH = os.path.join(os.getcwd(), "nltk_data")
-
 # Make sure it exists
 os.makedirs(NLTK_PATH, exist_ok=True)
 
