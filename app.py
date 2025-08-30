@@ -19,24 +19,25 @@ from collections import Counter
 # -----------------------
 # Ensure NLTK resources
 # -----------------------
-try:
-    stop_words = set(stopwords.words("english"))
-except LookupError:
-    nltk.download("stopwords")
-    stop_words = set(stopwords.words("english"))
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
-nltk_packages = ["wordnet", "punkt"]
-for pkg in nltk_packages:
-    try:
-        nltk.data.find(pkg)
-    except Exception:
+# Download NLTK data to a persistent location (Streamlit cache)
+@st.cache_resource
+def setup_nltk():
+    for pkg in ["stopwords", "wordnet", "punkt", "omw-1.4"]:
         try:
+            nltk.data.find(f"corpora/{pkg}")
+        except LookupError:
             nltk.download(pkg)
-        except Exception:
-            pass
+    return True
 
+setup_nltk()  # run once, cached
+
+# Now safe to use stopwords
+stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
-
 # -----------------------
 # Config / constants
 # -----------------------
