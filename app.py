@@ -13,11 +13,10 @@ from torch.nn.utils.rnn import pad_sequence
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-import nltk
+
 from collections import Counter
 
 import nltk
-import os
 
 # Choose a writable path inside your project
 NLTK_PATH = os.path.join(os.getcwd(), "nltk_data")
