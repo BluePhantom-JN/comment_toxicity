@@ -15,9 +15,16 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 from collections import Counter
+from nltk.corpus import stopwords
+try:
+    stop_words = set(stopwords.words("english"))
+except LookupError:
+    import nltk
+    nltk.download("stopwords")
+    stop_words = set(stopwords.words("english"))
 
 # Ensure NLTK data (if not present will attempt to download)
-nltk_packages = ["stopwords", "wordnet", "punkt"]
+nltk_packages = [ "wordnet", "punkt"]
 for pkg in nltk_packages:
     try:
         nltk.data.find(pkg)
