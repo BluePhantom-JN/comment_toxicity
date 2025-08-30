@@ -16,9 +16,24 @@ from nltk.stem import WordNetLemmatizer
 import nltk
 from collections import Counter
 
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('omw-1.4')
+import nltk
+import os
+
+# Choose a writable path inside your project
+NLTK_PATH = os.path.join(os.getcwd(), "nltk_data")
+
+# Make sure it exists
+os.makedirs(NLTK_PATH, exist_ok=True)
+
+# Append to nltk data search path
+nltk.data.path.append(NLTK_PATH)
+
+# Download resources (only runs the first time)
+nltk.download("stopwords", download_dir=NLTK_PATH)
+nltk.download("wordnet", download_dir=NLTK_PATH)
+nltk.download("omw-1.4", download_dir=NLTK_PATH)
+
+from nltk.corpus import stopwords
 
 # Ensure NLTK data (if not present will attempt to download)
 nltk_packages = ["stopwords", "wordnet", "punkt"]
