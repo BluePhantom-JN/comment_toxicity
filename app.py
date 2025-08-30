@@ -13,7 +13,7 @@ from torch.nn.utils.rnn import pad_sequence
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-import nltk
+
 from collections import Counter
 
 # -----------------------
